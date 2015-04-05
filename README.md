@@ -1,7 +1,8 @@
 #Project
-This was a project for the municipal physics conference in my town.<br>
+This was a project for the municipal physics conference in my town.<br><br>
 <b>I am really sorry for the code!</b>
-
+<br><br>
+/* <i>Seems something is wrong with drt. Also, ncurses interface is extremely raw. I'm working on it.<i> */<br><br>
 #Dependences
 - NTL
 - FreeGLUT
@@ -13,7 +14,7 @@ This was a project for the municipal physics conference in my town.<br>
 - `comparison`        -- program for comparison graphs' forms
 - `max`               -- program for searching the optimal angle of flight
 - `all`               -- it all together
-<br>
+<br><br>
 - `old_calculation`
 - `old_drawgraph`  
 - `old_max` -↑ Old versions of the programs. They depends on MPFR library and have no calculating optimization features.
