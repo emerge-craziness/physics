@@ -364,6 +364,9 @@ cerr << "ch: " << ch << "\n";
             case KEY_RIGHT:
                 form_driver( my_form, REQ_NEXT_CHAR );
                 break;
+            case 330: // Delete
+                form_driver( my_form, REQ_DEL_CHAR );
+                break;
             case 127: // Backspace
                 /* Delete a char */
                 form_driver( my_form, REQ_PREV_CHAR );
