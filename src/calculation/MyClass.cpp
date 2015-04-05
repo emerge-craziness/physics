@@ -260,7 +260,7 @@ int MyClass::_getdata (int mode) {
   return 0;
 }
 
-int MyClass::getdata( int mode )
+int MyClass::getdata()
 {
     char values[11][20]; // to store data
     FIELD *field[11];
@@ -271,12 +271,13 @@ int MyClass::getdata( int mode )
     initscr();
     cbreak();
     noecho();
+    raw();
     keypad( stdscr, true );
 
     /* Initialize the fields and set their options */
     for ( int i = 0; i < 10; i++ )
     {
-        field[i] = new_field( 1, 20, 10 + i * 2, 25, 0, 0 );
+        field[i] = new_field( 1, 20, 2 + i * 2, 25, 0, 0 );
         set_field_back( field[i], A_UNDERLINE ); 
         field_opts_off( field[i], O_AUTOSKIP );
     }
@@ -306,21 +307,20 @@ int MyClass::getdata( int mode )
     {
         tempss >> tempstring;
         set_field_buffer( field[i], 0, tempstring.c_str() );
-fprintf( stderr, "buffer %i: %s\n", i, field_buffer( field[i], 0 ) );
     }
     refresh();
 
-    mvprintw( 10, 10, "mass: ");
-    mvprintw( 12, 10, "angle: " );
-    mvprintw( 14, 10, "zero speed: " );
-    mvprintw( 16, 10, "zero x: " );
-    mvprintw( 18, 10, "zero y: " );
-    mvprintw( 20, 10, "delta time: " );
-    mvprintw( 22, 10, "g: " );
-    mvprintw( 24, 10, "air density: " );
-    mvprintw( 26, 10, "coefficient: " );
-    mvprintw( 28, 10, "radius: " );
-    mvprintw( 40, 1, "Press <F5> to run calculation, <F1> to escape" );
+    mvprintw( 2, 2, "mass: ");
+    mvprintw( 4, 2, "angle: " );
+    mvprintw( 6, 2, "zero speed: " );
+    mvprintw( 8, 2, "zero x: " );
+    mvprintw( 10, 2, "zero y: " );
+    mvprintw( 12, 2, "delta time: " );
+    mvprintw( 14, 2, "g: " );
+    mvprintw( 16, 2, "air density: " );
+    mvprintw( 18, 2, "coefficient: " );
+    mvprintw( 20, 2, "radius: " );
+    mvprintw( 22, 2, "Press <F5> to run calculation, <F1> to escape" );
     refresh();
 
 
@@ -328,12 +328,12 @@ fprintf( stderr, "buffer %i: %s\n", i, field_buffer( field[i], 0 ) );
 
     
     /* Loop through to get the data */
-    form_driver( my_form, REQ_NEXT_FIELD );
-    form_driver( my_form, REQ_PREV_FIELD );
+    //form_driver( my_form, REQ_NEXT_FIELD );
+    //form_driver( my_form, REQ_PREV_FIELD );
     form_driver( my_form, REQ_END_LINE );
     while(( ch = getch() ) != KEY_F( 5 ))
     {   
-cerr << "ch: " << ch << "\n";
+        /* cerr << "ch: " << ch << "\n"; */
         switch(ch)
         {   
             case KEY_F( 1 ):
@@ -403,6 +403,8 @@ cerr << "ch: " << ch << "\n";
        >> c
        >> R;
     
+    writeDefaults();
+    
     unpost_form( my_form );
     free_form( my_form );
     for ( int i = 0; i < 11; i++ )
@@ -414,20 +416,60 @@ cerr << "ch: " << ch << "\n";
     return 0;
 }
 
-int MyClass::initializeDefaults() {
-  c = 1.2;
-  p = 1.3;
-  zerospeed = 120.0; 
-  m = 0.005; 
-  alpha = 45.0; 
-  dt = 0.0001; 
-  R = 0.03; 
-  g = 9.81;
-  xPrev = 0;
-  yPrev = 0;
-  calculated_points = 1;
-  return 0;
+int MyClass::initializeDefaults() 
+{
+    ifstream defaultsFile;
+    defaultsFile.open( "./.calculate.defaults" );
+    if( defaultsFile.good() )
+    {
+        defaultsFile >> m
+                     >> alpha
+                     >> zerospeed
+                     >> xPrev
+                     >> yPrev
+                     >> dt
+                     >> g
+                     >> p
+                     >> c
+                     >> R;
+    }
+    else
+    {
+        c = 1.2;
+        p = 1.3;
+        zerospeed = 120.0; 
+        m = 0.005; 
+        alpha = 45.0; 
+        dt = 0.0001; 
+        R = 0.03; 
+        g = 9.81;
+        xPrev = 0;
+        yPrev = 0;
+    }
+
+    calculated_points = 1;
+
+    return 0;
 }
+
+int MyClass::writeDefaults()
+{
+    ofstream defaultsFile;
+    defaultsFile.open( "./.calculate.defaults", ios::out );
+    defaultsFile << m << "\n"
+                 << alpha << "\n"
+                 << zerospeed << "\n"
+                 << xPrev << "\n"
+                 << yPrev << "\n"
+                 << dt << "\n"
+                 << g << "\n"
+                 << p << "\n"
+                 << c << "\n"
+                 << R;
+    defaultsFile.close();
+    return 0;
+}
+    
 
 int MyClass::printdata() {
    std::ofstream file;

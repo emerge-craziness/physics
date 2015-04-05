@@ -7,11 +7,12 @@
 class MyClass {
   public:
   static int calculation();
-  static int getdata (int mode);
-  static int _getdata (int mode);
+  static int getdata();
+  static int _getdata(int mode);
   static int printdata();
   static int initializeDefaults();
-  static int setFilenames (std::string fValues, std::string fHeader, std::string fInfo);
+  static int writeDefaults();
+  static int setFilenames(std::string fValues, std::string fHeader, std::string fInfo);
   static int clearFiles();
 
   private:
@@ -61,7 +62,9 @@ class MyClass {
                  v_max,
                  k[4],
                  l[4];
+
   static int     calculated_points;
+
   static std::string  filenameValues,
                       filenameHeader,
                       filenameInfo;
