@@ -4,8 +4,9 @@ This was a project for the municipal physics conference in my town.<br><br>
 <br><br>
 /* <i>Seems something is wrong with drt. Also, ncurses interface is extremely raw. I'm working on it.<i> */<br><br>
 #Dependences
-- NTL
+- CLN
 - FreeGLUT
+- ncurses
 
 #Installation
 `Makefile` has the following targets:
@@ -17,8 +18,8 @@ This was a project for the municipal physics conference in my town.<br><br>
 <br><br>
 - `old_calculation`
 - `old_drawgraph`  
-- `old_max` -↑ Old versions of the programs. They depends on MPFR library and have no calculating optimization features.
-- `everything`        -- common target
+- `old_max` 
+- `everything` -- It is for old versions of the programs. They depend on MPFR library (instead of CLN) and have no calculating optimization features.      
 
 #Usage
 <b>`calculation`</b>` [datafile]` -- By default, "data" name is used.<br>
