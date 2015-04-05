@@ -265,7 +265,7 @@ int MyClass::getdata( int mode )
     char values[11][20]; // to store data
     FIELD *field[11];
     FORM *my_form;
-    int ch;
+    wchar_t ch;
 
     /* Initialize screen */
     initscr();
@@ -276,35 +276,76 @@ int MyClass::getdata( int mode )
     /* Initialize the fields and set their options */
     for ( int i = 0; i < 10; i++ )
     {
-        field[i] = new_field( 1, 20, 10 + i * 2, 20, 0, 0 );
+        field[i] = new_field( 1, 20, 10 + i * 2, 25, 0, 0 );
         set_field_back( field[i], A_UNDERLINE ); 
         field_opts_off( field[i], O_AUTOSKIP );
     }
     field[10] = NULL;
-    
+    refresh();
+
     /* Create the form and post it */
     my_form = new_form( field );
     post_form( my_form );
     refresh();
 
-    mvprintw( 10, 10, "m: ");
-    mvprintw( 12, 10, "alpha: " );
-    mvprintw( 14, 10, "zero speed: " );
-    mvprintw( 16, 10, "xPrev: " );
-    mvprintw( 18, 10, "yPrev: " );
-    mvprintw( 20, 10, "dt: " );
-    mvprintw( 22, 10, "g: " );
-    mvprintw( 24, 10, "p: " );
-    mvprintw( 26, 10, "c: " );
-    mvprintw( 28, 10, "R: " );
 
+    /* Initialize defaults */
+    stringstream tempss;
+    tempss << m << "\n";
+    tempss << alpha << "\n";
+    tempss << zerospeed << "\n";
+    tempss << xPrev << "\n";
+    tempss << yPrev << "\n";
+    tempss << dt << "\n";
+    tempss << g << "\n";
+    tempss << p << "\n";
+    tempss << c << "\n";
+    tempss << R << "\n";
+    string tempstring;
+    for ( int i = 0; i < 10; i++ )
+    {
+        tempss >> tempstring;
+        set_field_buffer( field[i], 0, tempstring.c_str() );
+fprintf( stderr, "buffer %i: %s\n", i, field_buffer( field[i], 0 ) );
+    }
     refresh();
+
+    mvprintw( 10, 10, "mass: ");
+    mvprintw( 12, 10, "angle: " );
+    mvprintw( 14, 10, "zero speed: " );
+    mvprintw( 16, 10, "zero x: " );
+    mvprintw( 18, 10, "zero y: " );
+    mvprintw( 20, 10, "delta time: " );
+    mvprintw( 22, 10, "g: " );
+    mvprintw( 24, 10, "air density: " );
+    mvprintw( 26, 10, "coefficient: " );
+    mvprintw( 28, 10, "radius: " );
+    mvprintw( 40, 1, "Press <F5> to run calculation, <F1> to escape" );
+    refresh();
+
+
+    
+
     
     /* Loop through to get the data */
-    while(( ch = getch() ) != KEY_F( 1 ))
+    form_driver( my_form, REQ_NEXT_FIELD );
+    form_driver( my_form, REQ_PREV_FIELD );
+    form_driver( my_form, REQ_END_LINE );
+    while(( ch = getch() ) != KEY_F( 5 ))
     {   
+cerr << "ch: " << ch << "\n";
         switch(ch)
         {   
+            case KEY_F( 1 ):
+                unpost_form( my_form );
+                free_form( my_form );
+                for ( int i = 0; i < 11; i++ )
+                {
+                    free_field( field[i] );
+                }
+                endwin();
+                return 1;
+            case 10: // Enter
             case KEY_DOWN:
                 /* Go to next field */
                 form_driver( my_form, REQ_NEXT_FIELD );
@@ -317,7 +358,13 @@ int MyClass::getdata( int mode )
                 form_driver( my_form, REQ_PREV_FIELD );
                 form_driver( my_form, REQ_END_LINE );
                 break;
-            case KEY_BACKSPACE:
+            case KEY_LEFT:
+                form_driver( my_form, REQ_PREV_CHAR );
+                break;
+            case KEY_RIGHT:
+                form_driver( my_form, REQ_NEXT_CHAR );
+                break;
+            case 127: // Backspace
                 /* Delete a char */
                 form_driver( my_form, REQ_PREV_CHAR );
                 form_driver( my_form, REQ_DEL_CHAR );
@@ -329,7 +376,7 @@ int MyClass::getdata( int mode )
                 break;
         }
     }
-fprintf( stderr, "getdata(): line: %i\n", __LINE__ );
+    form_driver( my_form, REQ_VALIDATION );
 
     stringstream ss;
     for ( int i = 0; i < 11; i++ )
@@ -373,6 +420,8 @@ int MyClass::initializeDefaults() {
   dt = 0.0001; 
   R = 0.03; 
   g = 9.81;
+  xPrev = 0;
+  yPrev = 0;
   calculated_points = 1;
   return 0;
 }
@@ -396,7 +445,7 @@ int MyClass::printdata() {
    << "\ncarry (=max x coordinate):        " << x_max << " metres"
    << "\ntime:                             " << fulltime << " seconds"
    << "\nnum of calculated points:         " << calculated_points << "\n";
-   std::cout << "\nData's been written to the \"" << filenameValues << "\" and \"" << filenameHeader << "\" files.\nMore information about results you can get from the " << filenameInfo << " file\n";
+   std::cout << "done.\nData've been written to \"" << filenameValues << "\" and \"" << filenameHeader << "\".\nMore information about results you can get from \"" << filenameInfo << "\".\n" << flush;
    file.close();
    return 0;
 }
