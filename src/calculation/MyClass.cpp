@@ -1,7 +1,10 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <iostream>
+#include <ncurses.h>
+#include <form.h>
 #include "MyClass.hpp"
 using namespace std;
 
@@ -114,7 +117,7 @@ int MyClass::calculateWriteToTheFile () {
        << vFullNext << "\n";
   file.close();
   
-  /* For an experement *
+  /* For experiment *
   std::cout << std::fixed << std::setprecision (9) 
        << xPrev << "\t" 
        << yPrev << "\t" 
@@ -173,7 +176,7 @@ int MyClass::calculation() {
   return 0;
 }
 
-int MyClass::getdata (int mode) {
+int MyClass::_getdata (int mode) {
   switch (mode) {
   default:
   case 0:
@@ -255,6 +258,110 @@ int MyClass::getdata (int mode) {
     break;
   }
   return 0;
+}
+
+int MyClass::getdata( int mode )
+{
+    char values[11][20]; // to store data
+    FIELD *field[11];
+    FORM *my_form;
+    int ch;
+
+    /* Initialize screen */
+    initscr();
+    cbreak();
+    noecho();
+    keypad( stdscr, true );
+
+    /* Initialize the fields and set their options */
+    for ( int i = 0; i < 10; i++ )
+    {
+        field[i] = new_field( 1, 20, 10 + i * 2, 20, 0, 0 );
+        set_field_back( field[i], A_UNDERLINE ); 
+        field_opts_off( field[i], O_AUTOSKIP );
+    }
+    field[10] = NULL;
+    
+    /* Create the form and post it */
+    my_form = new_form( field );
+    post_form( my_form );
+    refresh();
+
+    mvprintw( 10, 10, "m: ");
+    mvprintw( 12, 10, "alpha: " );
+    mvprintw( 14, 10, "zero speed: " );
+    mvprintw( 16, 10, "xPrev: " );
+    mvprintw( 18, 10, "yPrev: " );
+    mvprintw( 20, 10, "dt: " );
+    mvprintw( 22, 10, "g: " );
+    mvprintw( 24, 10, "p: " );
+    mvprintw( 26, 10, "c: " );
+    mvprintw( 28, 10, "R: " );
+
+    refresh();
+    
+    /* Loop through to get the data */
+    while(( ch = getch() ) != KEY_F( 1 ))
+    {   
+        switch(ch)
+        {   
+            case KEY_DOWN:
+                /* Go to next field */
+                form_driver( my_form, REQ_NEXT_FIELD );
+                /* Go to the end of the present buffer */
+                /* Leaves nicely at the last character */
+                form_driver( my_form, REQ_END_LINE );
+                break;
+            case KEY_UP:
+                /* Go to previous field */
+                form_driver( my_form, REQ_PREV_FIELD );
+                form_driver( my_form, REQ_END_LINE );
+                break;
+            case KEY_BACKSPACE:
+                /* Delete a char */
+                form_driver( my_form, REQ_PREV_CHAR );
+                form_driver( my_form, REQ_DEL_CHAR );
+                break;
+            default:
+                /* If this is a normal character, it gets */
+                /* Printed                */
+                form_driver(my_form, ch);
+                break;
+        }
+    }
+fprintf( stderr, "getdata(): line: %i\n", __LINE__ );
+
+    stringstream ss;
+    for ( int i = 0; i < 11; i++ )
+    {
+        snprintf( values[i], 20, "%s", field_buffer( field[i], 0 ) );
+        for ( int j = 0; j < 19; j++ )
+        {
+            ss << values[i][j];
+        }
+        ss << " ";
+    }
+
+    ss >> m
+       >> alpha
+       >> zerospeed
+       >> xPrev
+       >> yPrev
+       >> dt
+       >> g
+       >> p
+       >> c
+       >> R;
+    
+    unpost_form( my_form );
+    free_form( my_form );
+    for ( int i = 0; i < 11; i++ )
+    {
+        free_field( field[i] );
+    }
+
+    endwin();
+    return 0;
 }
 
 int MyClass::initializeDefaults() {

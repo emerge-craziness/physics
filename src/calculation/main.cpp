@@ -1,4 +1,5 @@
 #include <string>
+#include <stdio.h>
 #include "MyClass.hpp"
 
 int main(int argc, char* argv[]) {

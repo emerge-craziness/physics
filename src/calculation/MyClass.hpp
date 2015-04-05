@@ -8,6 +8,7 @@ class MyClass {
   public:
   static int calculation();
   static int getdata (int mode);
+  static int _getdata (int mode);
   static int printdata();
   static int initializeDefaults();
   static int setFilenames (std::string fValues, std::string fHeader, std::string fInfo);
