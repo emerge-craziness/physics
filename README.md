@@ -1,4 +1,5 @@
 #Project
+[![Build Status](https://travis-ci.org/emerge-craziness/physics.png)](https://travis-ci.org/emerge-craziness/physics.png)<br><br>
 This was a project for the municipal physics conference in my town.<br><br>
 <b>I am really sorry for the code!</b>
 <br><br>
