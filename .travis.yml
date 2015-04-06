@@ -1,0 +1,8 @@
+language: c++
+
+install:
+    - sudo apt-get update
+    - sudo apt-get install libcln-dev freeglut3 ncurses
+    
+script:
+    - make -B all
