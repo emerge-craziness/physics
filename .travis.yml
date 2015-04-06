@@ -1,8 +1,9 @@
-language: c++
+language: c
 
 install:
     - sudo apt-get update
-    - sudo apt-get install -f libcln-dev freeglut3 lib64ncurses5-dev
+    - sudo apt-get install libcln-dev freeglut3  g++
+    - sudo apt-get install lib64ncurses5:i386 lib64tinfo5:i386 libc6-amd64 libgcc1 libc-bin multiarch-support:i386 gcc-4.7-base libc0.1 libc6
     
 script:
     - make -B all
