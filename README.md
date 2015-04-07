@@ -4,7 +4,7 @@ This was a project for the municipal physics conference in my town.<br><br>
 <b>I am really sorry for the code!</b>
 <br><br>
 /* <i>Seems something is wrong with drt. Also, ncurses interface is extremely raw. I'm working on it.<i> */<br><br>
-#Dependences
+#Dependencies
 - CLN
 - FreeGLUT
 - ncurses
