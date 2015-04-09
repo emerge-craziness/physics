@@ -21,7 +21,7 @@ This was a project for the municipal physics conference in my town.<br><br>
 - `old_calculation`
 - `old_drawgraph`  
 - `old_max` 
-- `everything` -- It is for old versions of the programs. They depend on MPFR library (instead of CLN) and have no calculating optimization features.      
+- `everything` -- It is for old versions of the programs. They depend on MPFR library (instead of NTL) and have no calculating optimization features.      
 
 #Usage
 <b>`calculation`</b>` [datafile]` -- By default, "data" name is used.<br>
