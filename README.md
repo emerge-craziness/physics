@@ -3,11 +3,12 @@
 This was a project for the municipal physics conference in my town.<br><br>
 <b>I am really sorry for the code!</b>
 <br><br>
-/* <i>Seems something is wrong with drt. I'm working on it.<br>Plus, max has too old version...<i> */<br><br>
+/* <i>Seems something is wrong with drt. I'm working on it.<br>Plus, max has too old version...</i> */<br><br>
 #Dependencies
-- CLN
+- NTL
 - FreeGLUT
 - ncurses
+- mpfr (for old versions)
 
 #Installation
 `Makefile` has the following targets:
