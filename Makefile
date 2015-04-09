@@ -1,7 +1,7 @@
 all: max comparison calculation drt
 
 calculation:
-	g++ ./src/calculation/{MyClass,main}.cpp -lncurses -lform -o ./calculate -lntl
+	g++ ./src/calculation/MyClass.cpp ./src/calculation/main.cpp -lncurses -lform -o ./calculate -lntl
 
 max:
 	g++ ./src/max/*.cpp -o ./max -lmpfr
